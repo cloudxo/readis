@@ -16,6 +16,7 @@ use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\SetSubKeyDataBuilder
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\SortedSetKeyDataBuilder;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\SortedSetSubKeyDataBuilder;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\StringKeyDataBuilder;
+use hollodotme\Readis\Application\ReadModel\Prettifiers\CustomPrettifiers;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\HyperLogLogPrettifier;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\JsonPrettifier;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\PrettifierChain;
@@ -32,14 +33,15 @@ final class FetchKeyInformationQueryHandler
 	/** @var BuildsKeyData */
 	private $keyDataBuilder;
 
-	public function __construct( ProvidesRedisData $manager )
+	public function __construct( ProvidesRedisData $manager, CustomPrettifiers $customPrettifiers )
 	{
 		$this->manager = $manager;
 
 		$prettifier = new PrettifierChain();
 		$prettifier->addPrettifiers(
 			new JsonPrettifier(),
-			new HyperLogLogPrettifier()
+			new HyperLogLogPrettifier(),
+			$customPrettifiers
 		);
 
 		$this->keyDataBuilder = new KeyDataBuilder(
