@@ -2,7 +2,10 @@
 
 namespace hollodotme\Readis\Application\Configs;
 
+use hollodotme\Readis\Application\ReadModel\Prettifiers\CustomPrettifiers;
 use hollodotme\Readis\Exceptions\ApplicationConfigNotFound;
+use ReflectionClass;
+use function class_exists;
 use function dirname;
 use function file_exists;
 use const PHP_URL_PATH;
@@ -48,5 +51,36 @@ final class AppConfig
 		$path = parse_url( $baseUrl, PHP_URL_PATH ) ?? '';
 
 		return $path !== false ? $path : $baseUrl;
+	}
+
+	/**
+	 * @throws \ReflectionException
+	 * @return CustomPrettifiers
+	 */
+	public function getCustomPrettifiers() : CustomPrettifiers
+	{
+		$customPrettifiers = new CustomPrettifiers();
+
+		foreach ( (array)($this->configData['prettifiers'] ?? []) as $prettifier )
+		{
+			$className       = (string)$prettifier['class'];
+			$constructorArgs = (array)($prettifier['ctorArgs'] ?? []);
+
+			if ( !class_exists( $className ) )
+			{
+				continue;
+			}
+
+			$refClass = new ReflectionClass( $className );
+
+			if ( !$refClass->hasMethod( 'canPrettify' ) || !$refClass->hasMethod( 'prettify' ) )
+			{
+				continue;
+			}
+
+			$customPrettifiers->addPrettifiers( $refClass->newInstanceArgs( $constructorArgs ) );
+		}
+
+		return $customPrettifiers;
 	}
 }
