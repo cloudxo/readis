@@ -17,6 +17,7 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 	 * @param ProvidesReadRequestData $request
 	 *
 	 * @throws RuntimeException
+	 * @throws \ReflectionException
 	 */
 	public function handle( ProvidesReadRequestData $request )
 	{
@@ -31,8 +32,9 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 		$database = (int)$input->get( 'database', 0 );
 		$manager  = $this->getEnv()->getServerManagerForServerKey( $serverKey );
 
-		$query  = new FetchKeyInformationQuery( $database, $key, $subKey );
-		$result = (new FetchKeyInformationQueryHandler( $manager ))->handle( $query );
+		$customPrettifiers = $this->getEnv()->getAppConfig()->getCustomPrettifiers();
+		$query             = new FetchKeyInformationQuery( $database, $key, $subKey );
+		$result            = (new FetchKeyInformationQueryHandler( $manager, $customPrettifiers ))->handle( $query );
 
 		if ( $result->failed() )
 		{
