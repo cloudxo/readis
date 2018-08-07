@@ -3,6 +3,7 @@
 namespace hollodotme\Readis\Application\Configs;
 
 use hollodotme\Readis\Exceptions\ApplicationConfigNotFound;
+use function dirname;
 use function file_exists;
 use const PHP_URL_PATH;
 
