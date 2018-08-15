@@ -21,4 +21,13 @@
             <directory suffix=".php">../src</directory>
         </whitelist>
     </filter>
+    <listeners>
+        <listener class="hollodotme\PHPUnit\TestListeners\TestDox\Markdown">
+            <arguments>
+                <string>Development</string>
+                <string>docs/TestDox.md</string>
+                <string>hollodotme\Readis\Tests</string>
+            </arguments>
+        </listener>
+    </listeners>
 </phpunit>

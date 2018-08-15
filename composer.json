@@ -17,13 +17,16 @@
   "require": {
     "php": ">=7.1",
     "ext-redis": "*",
+    "ext-intl": "*",
+    "ext-json": "*",
     "icehawk/icehawk": "~2.2.0",
     "twig/twig": "~2.0",
     "wikimedia/composer-merge-plugin": "~1.4.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
-    "tm/tooly-composer-script": "~1.2.6"
+    "tm/tooly-composer-script": "~1.2.6",
+    "hollodotme/phpunit-testdox-markdown": "~1.0.0"
   },
   "autoload": {
     "psr-4": {
@@ -59,10 +62,6 @@
       },
       "coveralls": {
         "url": "https://github.com/satooshi/php-coveralls/releases/download/v2.0.0/php-coveralls.phar",
-        "only-dev": true
-      },
-      "phpmetrics": {
-        "url": "https://github.com/phpmetrics/PhpMetrics/releases/download/v2.3.2/phpmetrics.phar",
         "only-dev": true
       }
     }
