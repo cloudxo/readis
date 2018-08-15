@@ -2,25 +2,27 @@
 
 namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandlers;
 
-use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchKeyInformationQueryHandler;
 use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
+use hollodotme\Readis\Tests\Unit\Traits\CustomPrettifierMocking;
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use function preg_quote;
 
 final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 {
+	use CustomPrettifierMocking;
+
 	/**
 	 * @param string      $key
 	 * @param null|string $subKey
 	 * @param string      $expectedKeyType
 	 * @param string      $expectedKeyData
 	 * @param string      $expectedRawKeyData
-	 * @param bool       $expectedHasScore
-	 * @param float|null $expectedScore
+	 * @param bool        $expectedHasScore
+	 * @param float|null  $expectedScore
 	 *
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
@@ -43,7 +45,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$query        = new FetchKeyInformationQuery( 0, $key, $subKey );
 		$queryHandler = new FetchKeyInformationQueryHandler(
 			$this->getServerManagerMock( $serverKey ),
-			$this->getCustomPrettifiersMock()
+			$this->getRawPrettifierMock()
 		);
 		$result       = $queryHandler->handle( $query );
 
@@ -61,22 +63,6 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$this->assertRegExp( $rawKeyDataPattern, $keyData->getRawKeyData() );
 		$this->assertSame( $expectedHasScore, $keyData->hasScore() );
 		$this->assertSame( (string)$expectedScore, (string)$keyData->getScore() );
-	}
-
-	private function getCustomPrettifiersMock() : PrettifiesString
-	{
-		return new class implements PrettifiesString
-		{
-			public function canPrettify( string $data ) : bool
-			{
-				return false;
-			}
-
-			public function prettify( string $data ) : string
-			{
-				return $data;
-			}
-		};
 	}
 
 	public function keyInfoProvider() : array
@@ -244,7 +230,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$query        = new FetchKeyInformationQuery( 0, $key, $subKey );
 		$queryHandler = new FetchKeyInformationQueryHandler(
 			$this->getServerManagerMock( $serverKey ),
-			$this->getCustomPrettifiersMock()
+			$this->getRawPrettifierMock()
 		);
 		$result       = $queryHandler->handle( $query );
 
@@ -268,7 +254,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$query        = new FetchKeyInformationQuery( 0, $key, $subKey );
 		$queryHandler = new FetchKeyInformationQueryHandler(
 			$this->getServerManagerMock( $serverKey ),
-			$this->getCustomPrettifiersMock()
+			$this->getRawPrettifierMock()
 		);
 		$result       = $queryHandler->handle( $query );
 
@@ -278,5 +264,33 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 			'Could not connect to redis server: host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no',
 			$result->getMessage()
 		);
+	}
+
+	/**
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 * @throws NoServersConfigured
+	 * @throws ServerConfigNotFound
+	 */
+	public function testCanUseCustomPrettifiers() : void
+	{
+		$serverKey = '0';
+		$key       = 'base64';
+		$subKey    = null;
+
+		$query        = new FetchKeyInformationQuery( 0, $key, $subKey );
+		$queryHandler = new FetchKeyInformationQueryHandler(
+			$this->getServerManagerMock( $serverKey ),
+			$this->getCustomBase64Prettifier()
+		);
+		$result       = $queryHandler->handle( $query );
+
+		$this->assertTrue( $result->succeeded() );
+		$this->assertFalse( $result->failed() );
+		$this->assertSame( '', $result->getMessage() );
+
+		$keyData = $result->getKeyData();
+
+		$this->assertSame( 'Test-Data', $keyData->getKeyData() );
 	}
 }
