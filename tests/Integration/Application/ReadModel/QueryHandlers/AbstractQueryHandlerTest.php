@@ -11,6 +11,8 @@ use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 use hollodotme\Readis\Interfaces\ProvidesInfrastructure;
 use PHPUnit\Framework\TestCase;
 use Redis;
+use function base64_encode;
+use function count;
 
 abstract class AbstractQueryHandlerTest extends TestCase
 {
@@ -54,6 +56,8 @@ abstract class AbstractQueryHandlerTest extends TestCase
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		/** @noinspection PhpParamsInspection */
 		$this->redis->rawCommand( 'PFADD', 'hyperLogLog', 'a', 'b', 'c', 'd', 'e', 'f' );
+
+		$this->redis->set( 'base64', 'base64:' . base64_encode( 'Test-Data' ) );
 	}
 
 	protected function tearDown() : void
@@ -66,6 +70,7 @@ abstract class AbstractQueryHandlerTest extends TestCase
 	 * @param string $serverKey
 	 *
 	 * @throws NoServersConfigured
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @return ProvidesInfrastructure
 	 * @throws ServerConfigNotFound
 	 */

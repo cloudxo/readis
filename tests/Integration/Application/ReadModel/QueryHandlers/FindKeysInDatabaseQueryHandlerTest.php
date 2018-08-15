@@ -52,7 +52,7 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 				'database'         => 0,
 				'searchPattern'    => '*',
 				'limit'            => null,
-				'expectedKeyCount' => 7,
+				'expectedKeyCount' => 8,
 			],
 			[
 				'serverKey'        => '0',
@@ -66,7 +66,7 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 				'database'         => 0,
 				'searchPattern'    => '*as*',
 				'limit'            => null,
-				'expectedKeyCount' => 1,
+				'expectedKeyCount' => 2,
 			],
 			[
 				'serverKey'        => '0',
