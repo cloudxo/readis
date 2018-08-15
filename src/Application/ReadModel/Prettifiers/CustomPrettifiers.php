@@ -3,6 +3,7 @@
 namespace hollodotme\Readis\Application\ReadModel\Prettifiers;
 
 use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
+use function count;
 
 final class CustomPrettifiers implements PrettifiesString
 {
@@ -19,7 +20,7 @@ final class CustomPrettifiers implements PrettifiesString
 
 	public function canPrettify( string $data ) : bool
 	{
-		return true;
+		return count( $this->prettifiers ) > 0;
 	}
 
 	public function prettify( string $data ) : string
