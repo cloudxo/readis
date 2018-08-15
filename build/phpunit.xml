@@ -2,11 +2,12 @@
         bootstrap="../tests/bootstrap.php"
         verbose="true"
         beStrictAboutOutputDuringTests="true"
-        beStrictAboutTestSize="true"
         colors="true"
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true">
+        convertWarningsToExceptions="true"
+        stopOnError="true"
+        stopOnFailure="true">
     <testsuites>
         <testsuite name="Readis-Unit">
             <directory suffix="Test.php">../tests/Unit</directory>
