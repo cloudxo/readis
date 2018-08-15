@@ -6,6 +6,7 @@ use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
 use hollodotme\Readis\Application\ReadModel\DTO\KeyName;
 use hollodotme\Readis\Application\ReadModel\Interfaces\BuildsKeyData;
+use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\HashKeyDataBuilder;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\HashSubKeyDataBuilder;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\KeyDataBuilder;
@@ -16,7 +17,6 @@ use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\SetSubKeyDataBuilder
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\SortedSetKeyDataBuilder;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\SortedSetSubKeyDataBuilder;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\StringKeyDataBuilder;
-use hollodotme\Readis\Application\ReadModel\Prettifiers\CustomPrettifiers;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\HyperLogLogPrettifier;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\JsonPrettifier;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\PrettifierChain;
@@ -33,7 +33,7 @@ final class FetchKeyInformationQueryHandler
 	/** @var BuildsKeyData */
 	private $keyDataBuilder;
 
-	public function __construct( ProvidesRedisData $manager, CustomPrettifiers $customPrettifiers )
+	public function __construct( ProvidesRedisData $manager, PrettifiesString $customPrettifiers )
 	{
 		$this->manager = $manager;
 
