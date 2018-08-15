@@ -2,6 +2,7 @@
 
 namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandlers;
 
+use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchKeyInformationQueryHandler;
 use hollodotme\Readis\Exceptions\NoServersConfigured;
@@ -18,8 +19,8 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	 * @param string      $expectedKeyType
 	 * @param string      $expectedKeyData
 	 * @param string      $expectedRawKeyData
-	 * @param bool        $expectedHasScore
-	 * @param float|null  $expectedScore
+	 * @param bool       $expectedHasScore
+	 * @param float|null $expectedScore
 	 *
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
@@ -39,8 +40,12 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	{
 		$serverKey = '0';
 
-		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
-		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
+		$query        = new FetchKeyInformationQuery( 0, $key, $subKey );
+		$queryHandler = new FetchKeyInformationQueryHandler(
+			$this->getServerManagerMock( $serverKey ),
+			$this->getCustomPrettifiersMock()
+		);
+		$result       = $queryHandler->handle( $query );
 
 		$this->assertTrue( $result->succeeded() );
 		$this->assertFalse( $result->failed() );
@@ -56,6 +61,22 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$this->assertRegExp( $rawKeyDataPattern, $keyData->getRawKeyData() );
 		$this->assertSame( $expectedHasScore, $keyData->hasScore() );
 		$this->assertSame( (string)$expectedScore, (string)$keyData->getScore() );
+	}
+
+	private function getCustomPrettifiersMock() : PrettifiesString
+	{
+		return new class implements PrettifiesString
+		{
+			public function canPrettify( string $data ) : bool
+			{
+				return false;
+			}
+
+			public function prettify( string $data ) : string
+			{
+				return $data;
+			}
+		};
 	}
 
 	public function keyInfoProvider() : array
@@ -220,8 +241,12 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$key       = 'unknown-key';
 		$subKey    = null;
 
-		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
-		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
+		$query        = new FetchKeyInformationQuery( 0, $key, $subKey );
+		$queryHandler = new FetchKeyInformationQueryHandler(
+			$this->getServerManagerMock( $serverKey ),
+			$this->getCustomPrettifiersMock()
+		);
+		$result       = $queryHandler->handle( $query );
 
 		$this->assertFalse( $result->succeeded() );
 		$this->assertTrue( $result->failed() );
@@ -240,8 +265,12 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$key       = 'some-key';
 		$subKey    = null;
 
-		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
-		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
+		$query        = new FetchKeyInformationQuery( 0, $key, $subKey );
+		$queryHandler = new FetchKeyInformationQueryHandler(
+			$this->getServerManagerMock( $serverKey ),
+			$this->getCustomPrettifiersMock()
+		);
+		$result       = $queryHandler->handle( $query );
 
 		$this->assertFalse( $result->succeeded() );
 		$this->assertTrue( $result->failed() );
