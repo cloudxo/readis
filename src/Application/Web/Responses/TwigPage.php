@@ -40,7 +40,7 @@ final class TwigPage
 		{
 			header( 'Content-Type: text/html; charset=utf-8', true, $httpCode );
 			header( 'Access-Control-Allow-Origin: *' );
-			echo $this->renderer->render( $template, $this->getMergedData( $data ) );
+			echo $this->renderer->render( $template, $data );
 			flush();
 		}
 		catch ( Twig_Error_Loader | Twig_Error_Runtime | Twig_Error_Syntax $e )
@@ -103,16 +103,6 @@ final class TwigPage
 			{
 				return base64_encode( (string)$value );
 			}
-		);
-	}
-
-	private function getMergedData( array $data ) : array
-	{
-		return array_merge(
-			[
-				'appVersion' => '1.1.0',
-			],
-			$data
 		);
 	}
 }
