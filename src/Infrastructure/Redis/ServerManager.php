@@ -9,7 +9,6 @@ use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\DTO\KeyInfo;
 use hollodotme\Readis\Infrastructure\Redis\DTO\SlowLogEntry;
-use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use Redis;
 use function array_map;
 use function array_slice;
@@ -26,8 +25,6 @@ final class ServerManager implements ProvidesRedisData
 
 	/**
 	 * @param int $database
-	 *
-	 * @throws ConnectionFailedException
 	 */
 	public function selectDatabase( int $database ) : void
 	{
@@ -36,7 +33,6 @@ final class ServerManager implements ProvidesRedisData
 	}
 
 	/**
-	 * @throws ConnectionFailedException
 	 * @return array
 	 */
 	public function getServerConfig() : array
@@ -53,7 +49,6 @@ final class ServerManager implements ProvidesRedisData
 	}
 
 	/**
-	 * @throws ConnectionFailedException
 	 * @return int
 	 */
 	public function getSlowLogCount() : int
@@ -71,7 +66,6 @@ final class ServerManager implements ProvidesRedisData
 	 * @param int $limit
 	 *
 	 * @throws \Exception
-	 * @throws ConnectionFailedException
 	 * @return array|ProvidesSlowLogData[]
 	 */
 	public function getSlowLogEntries( int $limit = 100 ) : array
@@ -93,7 +87,6 @@ final class ServerManager implements ProvidesRedisData
 	}
 
 	/**
-	 * @throws ConnectionFailedException
 	 * @return array
 	 */
 	public function getServerInfo() : array
@@ -112,7 +105,6 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $keyPattern
 	 *
-	 * @throws ConnectionFailedException
 	 * @return array
 	 */
 	public function getKeys( string $keyPattern = '*' ) : array
@@ -125,7 +117,6 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string   $keyPattern
 	 * @param int|null $limit
 	 *
-	 * @throws ConnectionFailedException
 	 * @return array|ProvidesKeyInfo[]
 	 */
 	public function getKeyInfoObjects( string $keyPattern, ?int $limit ) : array
@@ -144,7 +135,6 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $key
 	 *
-	 * @throws ConnectionFailedException
 	 * @return ProvidesKeyInfo
 	 */
 	public function getKeyInfoObject( string $key ) : ProvidesKeyInfo
@@ -187,7 +177,7 @@ final class ServerManager implements ProvidesRedisData
 			/** @noinspection PhpUndefinedMethodInspection */
 			$subItems = array_combine(
 				range( 0, $setLength - 1 ),
-				array_values( $this->redis->zrange( $key, 0, $setLength - 1, true ) )
+				$this->redis->zrange( $key, 0, $setLength - 1, true )
 			);
 
 			return new KeyInfo( $key, $type, $ttl, $subItems );
@@ -199,7 +189,6 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $key
 	 *
-	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 * @return string
 	 */
@@ -220,7 +209,6 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string $key
 	 * @param string $hashKey
 	 *
-	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 * @return string
 	 */
@@ -240,7 +228,6 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $key
 	 *
-	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 * @return array
 	 */
@@ -261,7 +248,6 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string $key
 	 * @param int    $index
 	 *
-	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 * @return string
 	 */
@@ -281,7 +267,6 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $key
 	 *
-	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 * @return array
 	 */
@@ -303,7 +288,6 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string $key
 	 * @param int    $index
 	 *
-	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 * @return string
 	 */
@@ -322,7 +306,6 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $key
 	 *
-	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 * @return array
 	 */
@@ -342,7 +325,6 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $key
 	 *
-	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 * @return array
 	 */
@@ -363,7 +345,6 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $command
 	 *
-	 * @throws ConnectionFailedException
 	 * @return bool
 	 */
 	public function commandExists( string $command ) : bool

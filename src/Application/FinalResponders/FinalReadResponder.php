@@ -16,7 +16,7 @@ final class FinalReadResponder implements RespondsFinallyToReadRequest
 	 *
 	 * @throws RuntimeException
 	 */
-	public function handleUncaughtException( \Throwable $throwable, ProvidesReadRequestData $request )
+	public function handleUncaughtException( \Throwable $throwable, ProvidesReadRequestData $request ) : void
 	{
 		$data = [
 			'errorMessage' => $throwable->getMessage(),

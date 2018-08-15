@@ -11,6 +11,7 @@ use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
+use function strlen;
 
 final class SetKeyDataBuilder implements BuildsKeyData
 {

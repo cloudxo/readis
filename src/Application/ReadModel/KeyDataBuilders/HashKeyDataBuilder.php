@@ -11,6 +11,7 @@ use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
+use function strlen;
 
 final class HashKeyDataBuilder implements BuildsKeyData
 {
@@ -68,7 +69,7 @@ final class HashKeyDataBuilder implements BuildsKeyData
 		return sprintf(
 			"Field %s:\n%s\n%s",
 			$hashKey,
-			str_repeat( '=', 7 + strlen( (string)$hashKey ) ),
+			str_repeat( '=', 7 + strlen( $hashKey ) ),
 			$hashValue
 		);
 	}

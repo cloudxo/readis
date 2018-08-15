@@ -15,7 +15,7 @@ final class JsonPrettifier implements PrettifiesString
 {
 	public function canPrettify( string $data ) : bool
 	{
-		return (bool)preg_match( '#^({|\[).+(}|\])$#', $data );
+		return (bool)preg_match( '#^[{\[].+[}\]]$#', $data );
 	}
 
 	public function prettify( string $data ) : string

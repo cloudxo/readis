@@ -64,6 +64,7 @@ final class AppConfig
 		foreach ( (array)($this->configData['prettifiers'] ?? []) as $prettifier )
 		{
 			$className       = (string)$prettifier['class'];
+			/** @noinspection UnnecessaryCastingInspection */
 			$constructorArgs = (array)($prettifier['ctorArgs'] ?? []);
 
 			if ( !class_exists( $className ) )
