@@ -7,3 +7,4 @@
 /.redis/data/*
 /extensions/*
 !.gitkeep
+/composer.lock
